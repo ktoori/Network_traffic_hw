@@ -1007,6 +1007,21 @@ class FeatureTargetSplitHandler(Handler):
         if self._target not in data.columns:
             raise ValueError(f"Target column '{self._target}' not found")
 
+        # SAVE INTERMEDIATE CSV (X/y with column names)
+        source = data.attrs.get("__source_path__")
+        if source is not None:
+            source_path = Path(source)
+
+            data.to_csv(source_path.with_name("data_df.csv"), index=False, encoding="utf-8-sig")
+
+            # 2) X with feature names
+            X_df = data.drop(columns=[self._target])
+            X_df.to_csv(source_path.with_name("X_data.csv"), index=False, encoding="utf-8-sig")
+
+            # 3) y as separate csv
+            data[[self._target]].to_csv(source_path.with_name("y_data.csv"), index=False, encoding="utf-8-sig")
+        # END SAVE
+
         # Create Numpy arrays
         X = data.drop(columns=[self._target]).to_numpy(dtype=float)
         y = data[self._target].to_numpy(dtype=float)
