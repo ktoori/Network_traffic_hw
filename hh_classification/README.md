@@ -108,12 +108,24 @@ python -m src.modeling.run_experiments --artifacts-dir artifacts --out-dir artif
 
 ---
 
-## Структура проекта (основная)
-
-- src/prepare_dataset.py — подготовка датасета и графики баланса 
-- src/modeling/run_experiments.py — обучение моделей и сохранение отчётов 
-- src/modeling/train.py — обучение LogisticRegression, oversampling train 
-- src/modeling/evaluation.py — classification_report + confusion_matrix 
-- src/io_utils.py — чтение/сохранение CSV 
-- src/constants.py — константы проекта 
+## Структура проекта
+- src/ - Исходный код (пакет)
+   - io_utils.py — чтение/сохранение CSV
+   - logging_utils.py - Настройка логирования (сообщения на русском)
+   - level_prepare/ - Подготовка датасета для классификации
+      - constants.py - Константы подготовки (колонки, префиксы, regex)
+      - level_labeling.py - Разметка y_level по должности и стажу
+      - feature_cleaning.py - Очистка X от утечек (должности/места работы)
+      - plotting.py - Графики баланса классов
+      - prepare_dataset.py - CLI-скрипт: готовит artifacts/ (X_clean, y_level, графики)
+   - modeling/ - Обучение и оценка моделей
+      - constants.py - Константы обучения (seed, test_size, имена экспериментов)
+      - data_split.py - Train/test split
+      - train.py - Обучение LogisticRegression + oversampling (только train)
+      - evaluation.py - classification_report + confusion matrix + метрики
+      - run_experiments.py - CLI-скрипт: запускает baseline/balanced/oversample и сохраняет отчёты
+- artifacts/ - Артефакты подготовки данных (генерируются)
+- artifacts_model/ - Артефакты обучения (генерируются)
+- README.md
+- .gitignore
 - docs/ — поясняющие документы и выводы
